@@ -1,0 +1,21 @@
+apiVersion: v1  # apiVersion版本，可以通过kubectl explain pod 来查看pod需要的 apiVersion 版本
+kind: Pod # 设置资源类型
+metadata: # 元数据
+  name: pod-demo  # 定义pod的名称
+  namespace: default  # 设置pod的名称空间
+  labels: # 设置标签，里面的值可以随意设置，但注意是 key:value 格式
+    app: myapp
+    tier: frontend
+    author: Smurfs的格格巫
+spec: # 规范
+  containers: # 设置容器相关内容
+  # 容器-1 
+  - name: nginx-test # 容器名
+    image: nginx:1.14 # 容器镜像
+  # 容器-2
+  - name: busybox-test
+    image: busybox:latest
+    command:  # 设置创建容器之后运行的命令
+    - "/bin/sh" # 设置运行命令的类型 也可以使用/bin/python
+    - "-c"  # 这个是 /bin/sh 命令的一个参数，他可以直接运行shell命令
+    - "while true; do date; sleep 1; done;"
