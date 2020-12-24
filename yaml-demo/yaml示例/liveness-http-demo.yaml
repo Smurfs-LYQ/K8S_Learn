@@ -1,0 +1,22 @@
+# 存活性探测-http
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-http-demo
+  namespace: default
+  annotations:
+    author: "Smurfs的格格巫"
+spec:
+  containers:
+  - name: liveness-http
+    image: nginx:latest
+    imagePullPolicy: IfNotPresent
+    ports:
+    - name: http
+      containerPort: 80
+    livenessProbe:
+      httpGet:
+        port: http
+        path: /index.html
+      initialDelaySeconds: 1
+      periodSeconds: 3

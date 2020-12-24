@@ -6,7 +6,8 @@ metadata: # 元数据
   labels: # 设置标签，里面的值可以随意设置，但注意是 key:value 格式
     app: myapp
     tier: frontend
-    author: Smurfs的格格巫
+  annotations: # 给资源添加注释，这里的键值对可以随意设置
+    author: "Smmurfs的格格巫" # 作者
 spec: # 规范
   containers: # 设置容器相关内容
   # 容器-1 
@@ -19,3 +20,5 @@ spec: # 规范
     - "/bin/sh" # 设置运行命令的类型 也可以使用/bin/python
     - "-c"  # 这个是 /bin/sh 命令的一个参数，他可以直接运行shell命令
     - "while true; do date; sleep 1; done;"
+  nodeSelector: # node资源选择器，通过资源的labels来选择
+    name: myapp

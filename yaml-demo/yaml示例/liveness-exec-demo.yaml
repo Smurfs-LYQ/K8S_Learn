@@ -1,0 +1,25 @@
+# 存活性探测-exec
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-demo
+  namespace: default
+  annotations:
+    author: "Smmurfs的格格巫"
+spec:
+  containers:
+  - name: liveness-demo
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command:
+    - "/bin/sh"
+    - "-c"
+    - "touch /root/one.txt; sleep 15; rm -rf /root/one.txt; sleep 30"
+    livenessProbe:
+      exec:
+        command:
+        - "test"
+        - "-e"
+        - "/root/one.txt"
+      initialDelaySeconds: 1
+      periodSeconds: 3

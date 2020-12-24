@@ -8,8 +8,16 @@
    
    options:
    -n：指定名称空间
+   -o wide：显示详细信息，还可以使用yaml和json
    --show-labels：显示标签
-   -o wide：显示详细信息
+   -l 标签名：显示包含这个标签的pod，多个标签使用 , 号分割
+   -l 标签名=val：显示包含这个标签并且值=val的pod，多个标签使用 , 号分割，也可以使用 != 来表示不等于
+   -l 标签名 in (val1,val2): 显示包含这个标签并且值在列表中的pod，多个标签使用 , 号分割，也可以使用not in等
+   -L 标签名：显示所有pod这个标签的值，多个标签使用 , 号分割
+   
+   # 示例
+   # 获取标签run保护nginx-test和pod-demo的pod
+   kubectl get pods -l "run in (nginx-test,pod-demo)"
    ```
 
    
@@ -86,7 +94,21 @@
    kubectl rollout undo deployment nginx-deploy --to-revision=nginx:1.14-alpine
    ```
 
-9. 设置让nginx-deploy可以外部访问
+9. 创建一个svc
+
+   ```shell
+   # 格式
+   kubectl expose 资源类型 类型名 参数
+   
+   # 示例
+   kubectl expose deploy nginx-test --port=80 --target-port=80 --name=nginx
+   # 参数
+   --port : 资源要暴露的端口
+   --target-port : 目标暴露的端口
+   --name : 给这个svc指定一个名字
+   ```
+
+10. 设置让nginx-deploy可以外部访问
 
    ```shell
    # 原理
@@ -99,13 +121,13 @@
    # 可以通过访问 宿主机IP:端口 访问到
    ```
 
-10. 获取api相关信息
+11. 获取api相关信息
 
     ```shell
     kubectl api-version
     ```
 
-11. 获取yaml文件书写规范
+12. 获取yaml文件书写规范
 
     ```shell
     kubectl explain 资源类型
@@ -117,5 +139,20 @@
     例如：kubectl explain pods.metadata
     ```
 
-12. 
+13. 给资源添加标签
+
+    ```shell
+    # 格式
+    kubectl label 资源类型 资源名 key=value 参数
+    
+    # 示例
+    kubectl label pod pod-demo run=pod-demo
+    # 修改run这个label的值
+    kubectl label pod pod-demo run=pod-demo --overwrite
+    
+    # 参数
+    --overwrite : 如果想要修改对应的label的值, 可以使用下面的参数
+    ```
+
+14. 
 
