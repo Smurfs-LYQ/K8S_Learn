@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-demo
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+      release: canary
+  template:
+    metadata:
+      name: replicaset-demo-pod
+      namespace: default
+      labels:
+        app: myapp
+        release: canary
+        environment: qa
+    spec:
+      containers:
+      - name: myapp-container
+        image: nginx
+        ports:
+        - name: http
+          containerPort: 80
