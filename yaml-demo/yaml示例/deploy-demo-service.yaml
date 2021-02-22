@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: deploy-demo-service
+  namespace: default
+spec:
+  selector: # 标签选择器
+    app: myapp
+    release: canary
+  clusterIP: 10.99.99.99 # 指定IP，如果不指定，会自动分配
+  type: NodePort # 指定类型
+  ports:
+  - name: deploy-demo-service-port # 名字
+    nodePort: 30080 # node节点的端口，service类型为NodePort的时候才有必要使用这个参数，不指定会动态分配，一定要确保节点上这个端口没有被其他服务占用，端口的范围是 30000-32767
+    port: 80 # 对外提供服务的端口，service的端口
+    protocol: TCP # 指定端口协议，默认为TCP
+    targetPort: 80 # 容器端口

@@ -20,8 +20,6 @@
    kubectl get pods -l "run in (nginx-test,pod-demo)"
    ```
 
-   
-
 2. 查看资源的详细信息
 
    ```shell

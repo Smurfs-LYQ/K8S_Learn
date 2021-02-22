@@ -174,6 +174,16 @@
    # 如果指定版本安装的话，不可以先安装kubeadm，因为他依赖与kubelet，先安装kubeadm会导致kubelet直接安装最新版本的
    ```
 
+   ![image-20210216091934385](./images/image-20210216091934385.png)
+
+   ```shell
+   如果遇到上面这个依赖问题
+   解决办法：
+   	yum -y install http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.107-3.el7.noarch.rpm
+   ```
+
+   
+
 3. Master, Nodes：配置docker
 
    - 修改 Cgroup Driver
@@ -267,6 +277,41 @@
      # 并在使用kubeadm初始化的时候 添加 --ignore-preflight-errors=Swap
      ```
 
+   - 设置service默认工作模式为ipvs
+
+     ```shell
+     # 修改kubelet配置文件下面的内容
+     KUBE_PROXY_MODE="ipvs"
+     
+     # 之后执行下面的命令，为kube-proxy开启ipvs的前提需要加载以下的内核模块
+     mkdir -p  /etc/sysconfig/modules/
+     cat > /etc/sysconfig/modules/ipvs.modules <<EOF
+     #!/bin/bash
+     modprobe -- ip_vs
+     modprobe -- ip_vs_rr
+     modprobe -- ip_vs_wrr
+     modprobe -- ip_vs_sh
+     modprobe -- nf_conntrack_ipv4
+     EOF
+     chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack_ipv4
+     # 使用lsmod | grep -e ip_vs -e nf_conntrack_ipv4命令查看是否已经正确加载所需的内核模块
+     
+     # 安装程序包
+     yum -y install ipvsadm ipset
+     
+     # 修改ConfigMap的kube-system/kube-proxy中的config.conf，mode: “ipvs”
+     kubectl edit cm kube-proxy -n kube-system
+     
+     # 重启各个节点上的kube-proxy pod
+     kubectl get pod -n kube-system | grep kube-proxy | awk '{system("kubectl delete pod "$1" -n kube-system")}'
+     
+     # 使用下面命令可以查看ipvs的规则
+     ipvsadm -L -n
+     
+     # 总结连接
+     https://www.jianshu.com/p/d1ba8b910085
+     ```
+     
    - 启动kubelet
 
      ```shell

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: deploy-demo-service-headless
+  namespace: default
+spec:
+  selector: # 标签选择器
+    app: myapp
+    release: canary
+  clusterIP: None
+  ports:
+  - name: deploy-demo-service-headless-port # 名字
+    port: 80 # 对外提供服务的端口，service的端口
+    protocol: TCP # 指定端口协议，默认为TCP
+    targetPort: 80 # 容器端口
