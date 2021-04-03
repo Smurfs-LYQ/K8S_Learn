@@ -27,6 +27,6 @@ spec:
     - "while true; do date > /html/index.html; sleep 1; done"
   volumes: # 定义存储卷
   - name: html  # 设定名字
-    nfs:   # 设置类型极其参数
+    nfs:   # 设置类型极其参数，注意，使用nfs要确保运行pod的节点支持挂载nfs，测试命令: mount -t nfs 192.168.1.101:/disk-1 /mnt   如果不支持，安装 nfs-utils
       path: /home/nfs-volume
       server: master-1 # 这里可以设置域名或者IP

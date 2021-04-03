@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: statefulset-svc-demo
+spec:
+  clusterIP: None # 设置为headless server
+  ports:
+    - port: 80
+      name: web
+  selector:
+    app: statefulset-pod-demo
+  
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-myapp
+spec:
+  serviceName: statefulset-svc-demo # 注意 statefulset 必须有且必须为无头类型的service
+  replicas: 2
+  selector:
+    matchLabels:
+      app: statefulset-pod-demo
+  template:
+    metadata:
+      labels:
+        app: statefulset-pod-demo
+    spec:
+      containers:
+        - name: statefulset-pod
+          image: nginx:1.15-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 80
+            name: web
+          volumeMounts:
+          - name: myapp_data
+            mountPath: /usr/share/nginx/html
+  volumeClaimTemplates: # 定义pvc存储模板，他会跟去设定自动申请创建pvc
+  - metadata:
+      name: myapp_data
+    spec:
+      accessModes: ["ReadWriteOnce"]  # 设置pvc模式
+      resources:
+        requests:
+          storage: 2Gi

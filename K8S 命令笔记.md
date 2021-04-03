@@ -56,6 +56,8 @@
    
    # 示例，将deployment对象的nginx-deploy的调整到两个pod
    kubectl scale --replicas=2 deployment nginx-deploy
+   
+   # 可以通过调整资源大小的方式重启pod
    ```
 
 6. 改变镜像的版本，滚动升级更新
@@ -152,5 +154,29 @@
     --overwrite : 如果想要修改对应的label的值, 可以使用下面的参数
     ```
 
-14. 
+14. 重启pod
+
+    ```shell
+    kubectl get pod pod-volume-pvc -o yaml | kubectl replace --force -f -
+    ```
+
+15. 重启Deploy以达到重启pod的目的
+
+    ```shell
+    kubectl scale deployment deploy名字 --replicas=0 -n {namespace}
+    kubectl scale deployment deploy名字 --replicas=1 -n {namespace}
+    
+    # 由于 Deployment 对象并不是直接操控的 Pod 对象，而是操控的 ReplicaSet 对象，而 ReplicaSet 对象就是由副本的数目的定义和Pod 模板组成的。所以这条命令分别是将ReplicaSet 的数量 scale 到 0，然后又 scale 到 1，那么 Pod 也就重启了。
+    ```
+
+16. 有yaml文件的重启方式
+
+    ```shell
+    在有 yaml 文件的情况下可以直接使用 kubectl replace --force -f xxx.yaml 来强制替换Pod 的 API 对象，从而达到重启的目的
+    
+    replace: 通过 filename 或者 stdin替换一个资源
+    --force：如果为true，立即从API中删除资源，并跳过优雅删除。
+    ```
+
+17. 
 

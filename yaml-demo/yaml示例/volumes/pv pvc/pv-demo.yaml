@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv001
+  # 定义pv的时候一定不要加名称空间，因为pv是属于集群级别的，不属于名称空间，但是pvc是名称空间级别的
+  labels:
+    name: pv001
+spec:
+  nfs:  # 注意：如果pv也是基于nfs，那需要node节点支持挂在nfs，如果不支持，需要安装 nfs-utils
+    path: /disk-1/v1
+    server: node-2
+  accessModes: # 设置访问模式
+    - ReadWriteMany
+  # accessModes: ["ReadWriteMany", "ReadWriteOnce", "ReadOnlyMany"]
+    # ReadWriteMany # 多路读写 简写 RWX
+    # ReadWriteOnce # 单路读写 简写 RWO
+    # ReadOnlyMany # 多路只读 简写 ROX
+  capacity: # 指定存储空间大小
+    storage: 2Gi # 这里的Gi就是正常的G, 1024MB，如果是G那这玩意就跟买硬盘的厂家一样，标的500G，其实可能只有480G，计算方式不一样
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv002
+  labels:
+    name: pv002
+spec:
+  nfs:
+    path: /disk-1/v2
+    server: node-2
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv003
+  labels:
+    name: pv003
+spec:
+  nfs:
+    path: /disk-1/v3
+    server: node-2
+  accessModes:
+    - ReadOnlyMany
+  capacity:
+    storage: 1Gi
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv004
+  labels:
+    name: pv004
+spec:
+  nfs:
+    path: /disk-1/v4
+    server: node-2
+  accessModes: ["ReadWriteMany", "ReadWriteOnce", "ReadOnlyMany"]
+  capacity:
+    storage: 5Gi
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv005
+  labels:
+    name: pv005
+spec:
+  nfs:
+    path: /disk-1/v5
+    server: node-2
+  accessModes: ["ReadWriteMany", "ReadWriteOnce", "ReadOnlyMany"]
+  capacity:
+    storage: 10Gi
