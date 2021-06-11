@@ -13,14 +13,6 @@ spec: # 规范
   # 容器-1 
   - name: nginx-test # 容器名
     image: nginx:1.14 # 容器镜像
-    # 资源限制
-    resources:
-      limits:       # 设置资源最大限制
-        cpu: "2"    # 设置最大使用cpu数量
-        memory: 1Gi # 设置最大使用内存数量
-      requests:       # 设置资源最小限制
-        cpu: "0.5"    # 设置最小使用cpu数量
-        memory: 512Mi # 设置最小使用内存数量
   # 容器-2
   - name: busybox-test
     image: busybox:latest

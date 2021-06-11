@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: statefulset-svc-demo
+spec:
+  clusterIP: None
+  ports:
+    - port: 80
+      name: web
+  selector:
+    app: statefulset-pod-demo
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-myapp
+spec:
+  serviceName: statefulset-svc-demo
+  replicas: 2
+  selector:
+    matchLabels:
+      app: statefulset-pod-demo
+  template:
+    metadata:
+      labels:
+        app: statefulset-pod-demo
+    spec:
+      containers:
+        - name: statefulset-pod
+          image: nginx:1.15-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 80
+            name: web
+          volumeMounts:
+          - name: myapp-data
+            mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: myapp-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 2Gi
